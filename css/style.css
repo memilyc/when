@@ -548,6 +548,10 @@ footer[role="contentinfo"] {
   vertical-align: middle;
 }
 
+.copy-confirm[hidden] {
+  display: none;
+}
+
 
 /* ── 15. City search autocomplete ── */
 .city-search-wrapper {
