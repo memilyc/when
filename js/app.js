@@ -179,8 +179,8 @@
 
     /**
      * Builds the human-readable share text:
-     *   Lagos, 1:00 AM
-     *   Seoul, 9:00 AM
+     *   WAT, Lagos, 1:00 AM
+     *   MYT, Kuala Lumpur, 9:00 PM
      *   https://memilyc.github.io/when/?t=...
      */
     function buildShareText(url) {
@@ -189,11 +189,12 @@
       if (timezoneRows) {
         timezoneRows.rows.forEach(function (row) {
           var dt = luxon.DateTime.fromMillis(utcMillis).setZone(row.tz);
+          var abbr = dt.toFormat('ZZZZ');
           var timeStr = dt.toJSDate().toLocaleTimeString(navigator.language, {
             hour: 'numeric', minute: '2-digit', hour12: undefined,
             timeZone: row.tz
           });
-          lines.push(row.city + ', ' + timeStr);
+          lines.push(abbr + ', ' + row.city + ', ' + timeStr);
         });
       }
       lines.push(url);
