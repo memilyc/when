@@ -228,6 +228,20 @@ footer[role="contentinfo"] {
   background-color: var(--color-surface);
 }
 
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.footer-bob {
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .footer-text {
   font-size: 0.8125rem;
   color: var(--color-text-muted);
