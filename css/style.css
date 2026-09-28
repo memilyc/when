@@ -264,11 +264,12 @@ footer[role="contentinfo"] {
   --track-w:  100%;       /* JS uses the wrapper's clientWidth; this is a fallback */
 }
 
-/* Wrapper: relative positioning host for the floating icon */
+/* Wrapper: position:relative host. The track input + icon sit inside.
+   No extra padding needed — the icon is centred ON the thumb, not above it. */
 .slider-track-wrapper {
   position: relative;
-  padding-top: 2.5rem;    /* vertical room for the floating icon above the track */
-  padding-bottom: 0.25rem;
+  /* Vertical padding so the thumb (2.75rem) isn't clipped by the section */
+  padding-block: calc(var(--thumb-size) / 2 + 0.25rem);
 }
 
 /* The range input — full width, no default appearance */
@@ -316,6 +317,10 @@ footer[role="contentinfo"] {
   -webkit-tap-highlight-color: transparent;
   /* Vertically centre thumb on the track */
   margin-top: calc((var(--thumb-size) - var(--track-h)) / -2);
+  /* Make room for the emoji to sit inside without being clipped */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ── Thumb — Firefox ── */
@@ -348,35 +353,39 @@ footer[role="contentinfo"] {
   outline-offset: 3px;
 }
 
-/* ── Floating icon ── */
+/* ── Floating icon — centred ON the thumb circle ── */
 .time-slider-icon {
   position: absolute;
-  top: 0;
+  /* Vertically align with the track centre line */
+  top: 50%;
   /* left is set dynamically by JS */
-  transform: translateX(-50%);
-  font-size: 1.5rem;
+  /* Centre the icon glyph on the thumb: offset by half thumb width horizontally,
+     and by half thumb height vertically (thumb is centred on the track) */
+  transform: translate(-50%, -50%);
+  font-size: 1.25rem;
   line-height: 1;
   pointer-events: none;
   user-select: none;
-  /* Transitions for the crossing animation handled by .icon-exit / .icon-enter */
   opacity: 1;
   transition: opacity 0.3s ease, transform 0.3s ease;
+  /* Sit above the thumb pseudo-element visually */
+  z-index: 1;
 }
 
 /* Icon exit: fade out and shrink */
 .time-slider-icon.icon-exit {
   opacity: 0;
-  transform: translateX(-50%) scale(0.6);
+  transform: translate(-50%, -50%) scale(0.6);
 }
 
-/* Icon enter: fade in and grow from small */
+/* Icon enter: fade in */
 .time-slider-icon.icon-enter {
   animation: icon-pop-in 0.35s ease forwards;
 }
 
 @keyframes icon-pop-in {
-  from { opacity: 0; transform: translateX(-50%) scale(0.6); }
-  to   { opacity: 1; transform: translateX(-50%) scale(1);   }
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1);   }
 }
 
 /* ── Time display paragraph ── */

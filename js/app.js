@@ -204,6 +204,25 @@
       document.body.removeChild(input);
     }
 
+    // ── localStorage helpers ──────────────────────────────────────────────────
+    var LS_KEY = 'when-timezones';
+
+    function saveTzToStorage() {
+      if (!timezoneRows) return;
+      // Save all rows except the local (index 0) — local is always auto-detected
+      var tzList = timezoneRows.getTimezones().slice(1);
+      try {
+        localStorage.setItem(LS_KEY, JSON.stringify(tzList));
+      } catch (e) { /* storage full or private mode — silently ignore */ }
+    }
+
+    function loadTzFromStorage() {
+      try {
+        var raw = localStorage.getItem(LS_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) { return []; }
+    }
+
     // ── Bootstrap ─────────────────────────────────────────────────────────────
 
     // Wait for cities cache before building TimezoneRows — the search input must
@@ -216,12 +235,17 @@
         function onRowAdded() {
           // Re-render all rows with the current slider+date UTC value so the
           // newly added row immediately shows the correct converted time.
+          saveTzToStorage();
+          onStateChange();
+        },
+        function onRowRemoved() {
+          saveTzToStorage();
           onStateChange();
         }
       );
 
       if (window.location.search && new URLSearchParams(window.location.search).get('t')) {
-        // Decode shared URL: restore slider, date, and extra tz rows.
+        // Shared URL takes priority over localStorage
         var params    = new URLSearchParams(window.location.search);
         var utcMillis = parseInt(params.get('t'), 10) * 1000;
         var localDt   = luxon.DateTime.fromMillis(utcMillis, { zone: 'system' });
@@ -235,6 +259,10 @@
 
         var tzParams = params.getAll('tz');
         if (tzParams.length > 0) timezoneRows.setTimezones(tzParams);
+      } else {
+        // No shared URL — restore last-used timezones from localStorage
+        var saved = loadTzFromStorage();
+        if (saved.length > 0) timezoneRows.setTimezones(saved);
       }
 
       onStateChange();

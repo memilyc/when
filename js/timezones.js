@@ -358,12 +358,13 @@
    * @param {HTMLElement}      searchContainer — #city-search-container
    * @param {function}         [onRowAdded]    — optional callback after a row is added
    */
-  function TimezoneRows(listEl, searchContainer, onRowAdded) {
+  function TimezoneRows(listEl, searchContainer, onRowAdded, onRowRemoved) {
     this.listEl = listEl;
     /** @type {Array<{city:string, country:string, tz:string, el:HTMLLIElement, isLocal:boolean}>} */
     this.rows   = [];
     this._lastUtcMillis = Date.now();
-    this._onRowAdded = onRowAdded || null;
+    this._onRowAdded   = onRowAdded   || null;
+    this._onRowRemoved = onRowRemoved || null;
 
     var self = this;
 
@@ -476,6 +477,7 @@
     var removed = this.rows.splice(idx, 1)[0];
     if (removed.el.parentNode) removed.el.parentNode.removeChild(removed.el);
     this._updateHint();
+    if (this._onRowRemoved) this._onRowRemoved();
   };
 
   /**
