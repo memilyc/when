@@ -1,0 +1,797 @@
+/* ============================================================
+   When — Timezone Converter
+   css/style.css
+
+   Structure:
+     1. CSS custom properties (light tokens)
+     2. Dark mode token overrides
+     3. Reset / base
+     4. Layout helpers
+     5. Skip-nav
+     6. Header
+     7. Main sections
+     8. Footer
+     9. Utility
+   ============================================================ */
+
+
+/* ── 1. Light-mode colour tokens ── */
+:root {
+  /* Background layers */
+  --color-bg:          #ffffff;
+  --color-surface:     #f7f8fa;
+  --color-surface-alt: #eef0f3;
+
+  /* Borders */
+  --color-border:      #d0d7de;
+
+  /* Text */
+  --color-text:        #1f2328;
+  --color-text-muted:  #57606a;
+
+  /* Accent (links, focus rings) */
+  --color-accent:      #0550ae;
+
+  /* Slider track colours — flat, no gradients */
+  --color-track-day:   #f59e0b;   /* warm amber for daytime */
+  --color-track-night: #4338ca;   /* indigo for night */
+  --color-track-bg:    #d0d7de;   /* unfilled portion */
+
+  /* Interactive states */
+  --color-focus-ring:  #0550ae;
+
+  /* Typography */
+  --font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+  --font-size-base: 1rem;        /* 16px */
+  --line-height-base: 1.6;
+
+  /* Spacing */
+  --space-xs:  0.25rem;
+  --space-sm:  0.5rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+
+  /* Layout */
+  --max-width: 640px;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+}
+
+
+/* ── 2. Dark-mode token overrides ── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:          #0d1117;
+    --color-surface:     #161b22;
+    --color-surface-alt: #21262d;
+
+    --color-border:      #30363d;
+
+    --color-text:        #e6edf3;
+    --color-text-muted:  #8b949e;
+
+    --color-accent:      #58a6ff;
+
+    --color-track-day:   #d97706;
+    --color-track-night: #6366f1;
+    --color-track-bg:    #30363d;
+
+    --color-focus-ring:  #58a6ff;
+  }
+}
+
+
+/* ── 3. Reset / base ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-width: 320px;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* Visible focus rings for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Remove default focus outline; we handle it via :focus-visible */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+ul {
+  list-style: none;
+}
+
+h1, h2, h3 {
+  line-height: 1.3;
+}
+
+
+/* ── 4. Layout helpers ── */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--space-md);
+}
+
+
+/* ── 5. Skip-nav ── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-accent);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  z-index: 1000;
+  transition: top 0.1s;
+}
+
+.skip-link:focus {
+  top: var(--space-md);
+}
+
+
+/* ── 6. Header ── */
+header[role="banner"] {
+  padding-block: var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+}
+
+header .container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.site-logo {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.site-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.site-tagline {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin-left: auto;
+}
+
+
+/* ── 7. Main sections ── */
+main[role="main"] {
+  padding-block: var(--space-xl);
+}
+
+.section {
+  margin-bottom: var(--space-xl);
+  padding: var(--space-lg);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-md);
+}
+
+
+/* ── 8. Footer ── */
+footer[role="contentinfo"] {
+  padding-block: var(--space-lg);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+}
+
+.footer-text {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+
+/* ── 9. Utility ── */
+
+/* Visually hidden but accessible to screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* ── 10. Time slider component ── */
+
+/*
+ * Thumb dimensions as custom properties so JS can read them via getComputedStyle
+ * for icon-positioning math.  Set them on :root so var() resolves anywhere.
+ */
+:root {
+  --thumb-size: 2.75rem;  /* 44 px — minimum touch target */
+  --thumb-w: 2.75rem;     /* alias used in JS calc() for icon offset */
+  --track-h:  0.375rem;   /* 6 px track height */
+  --track-w:  100%;       /* JS uses the wrapper's clientWidth; this is a fallback */
+}
+
+/* Wrapper: relative positioning host for the floating icon */
+.slider-track-wrapper {
+  position: relative;
+  padding-top: 2.5rem;    /* vertical room for the floating icon above the track */
+  padding-bottom: 0.25rem;
+}
+
+/* The range input — full width, no default appearance */
+.time-slider-input {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: var(--track-h);
+  border-radius: 9999px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  /* Track fill via linear-gradient hard stop — no visual gradient.
+     --slider-fill-pct and colour classes are updated by JS. */
+  background: linear-gradient(
+    to right,
+    var(--color-track-day) var(--slider-fill-pct, 50%),
+    var(--color-track-bg)  var(--slider-fill-pct, 50%)
+  );
+  transition: background 0.4s ease;
+}
+
+/* Night mode: swap fill colour to indigo */
+.time-slider-input.is-night {
+  background: linear-gradient(
+    to right,
+    var(--color-track-night) var(--slider-fill-pct, 50%),
+    var(--color-track-bg)    var(--slider-fill-pct, 50%)
+  );
+}
+
+/* ── Thumb — WebKit (Chrome, Safari, Edge) ── */
+.time-slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width:  var(--thumb-size);
+  height: var(--thumb-size);
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  /* Vertically centre thumb on the track */
+  margin-top: calc((var(--thumb-size) - var(--track-h)) / -2);
+}
+
+/* ── Thumb — Firefox ── */
+.time-slider-input::-moz-range-thumb {
+  width:  var(--thumb-size);
+  height: var(--thumb-size);
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: none;
+  cursor: pointer;
+}
+
+/* Firefox track (required to suppress default fill colours) */
+.time-slider-input::-moz-range-track {
+  height: var(--track-h);
+  border-radius: 9999px;
+  background: transparent;  /* gradient on the input element already covers this */
+}
+
+/* Focus ring on the thumb */
+.time-slider-input:focus-visible {
+  outline: none;
+}
+.time-slider-input:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+.time-slider-input:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+/* ── Floating icon ── */
+.time-slider-icon {
+  position: absolute;
+  top: 0;
+  /* left is set dynamically by JS */
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  /* Transitions for the crossing animation handled by .icon-exit / .icon-enter */
+  opacity: 1;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Icon exit: fade out and shrink */
+.time-slider-icon.icon-exit {
+  opacity: 0;
+  transform: translateX(-50%) scale(0.6);
+}
+
+/* Icon enter: fade in and grow from small */
+.time-slider-icon.icon-enter {
+  animation: icon-pop-in 0.35s ease forwards;
+}
+
+@keyframes icon-pop-in {
+  from { opacity: 0; transform: translateX(-50%) scale(0.6); }
+  to   { opacity: 1; transform: translateX(-50%) scale(1);   }
+}
+
+/* ── Time display paragraph ── */
+.time-display {
+  margin-top: var(--space-md);
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+
+/* ── 11. Theme toggle button ── */
+.theme-toggle {
+  margin-left: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  transition: background 0.15s ease, border-color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  background: var(--color-border);
+}
+
+/* ── 12. Dark-mode override via data attribute (JS toggle) ── */
+[data-theme="dark"] {
+  --color-bg:          #0d1117;
+  --color-surface:     #161b22;
+  --color-surface-alt: #21262d;
+  --color-border:      #30363d;
+  --color-text:        #e6edf3;
+  --color-text-muted:  #8b949e;
+  --color-accent:      #58a6ff;
+  --color-track-day:   #d97706;
+  --color-track-night: #6366f1;
+  --color-track-bg:    #30363d;
+  --color-focus-ring:  #58a6ff;
+}
+
+[data-theme="light"] {
+  --color-bg:          #ffffff;
+  --color-surface:     #f7f8fa;
+  --color-surface-alt: #eef0f3;
+  --color-border:      #d0d7de;
+  --color-text:        #1f2328;
+  --color-text-muted:  #57606a;
+  --color-accent:      #0550ae;
+  --color-track-day:   #f59e0b;
+  --color-track-night: #4338ca;
+  --color-track-bg:    #d0d7de;
+  --color-focus-ring:  #0550ae;
+}
+
+/* ── 13. Date input ── */
+.date-input {
+  display: block;
+  width: 100%;
+  max-width: 20rem;
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.date-input:hover {
+  border-color: var(--color-accent);
+}
+
+/* Tint the calendar icon to match theme on WebKit */
+.date-input::-webkit-calendar-picker-indicator {
+  filter: invert(0);
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+[data-theme="dark"] .date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.7;
+}
+
+@media (prefers-color-scheme: dark) {
+  .date-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.7;
+  }
+}
+
+/* ── 14. Share / copy-link button ── */
+.btn-share {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--color-accent);
+  color: #ffffff;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.btn-share:hover {
+  opacity: 0.85;
+}
+
+.copy-confirm {
+  display: inline-block;
+  margin-left: var(--space-md);
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  vertical-align: middle;
+}
+
+
+/* ── 15. City search autocomplete ── */
+.city-search-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: var(--space-md);
+}
+
+.city-search-input {
+  display: block;
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s ease;
+  /* Minimum 44px tap target height */
+  min-height: 2.75rem;
+}
+
+.city-search-input:hover {
+  border-color: var(--color-accent);
+}
+
+.city-search-input:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-color: var(--color-accent);
+}
+
+.city-search-dropdown {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  width: 100%;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  z-index: 100;
+  max-height: 240px;
+  overflow-y: auto;
+  list-style: none;
+  padding: var(--space-xs) 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.city-search-dropdown li {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  min-height: 2.75rem;
+  justify-content: center;
+  gap: 2px;
+}
+
+.city-search-dropdown li:hover,
+.city-search-dropdown li.is-active,
+.city-search-dropdown li[aria-selected="true"] {
+  background-color: var(--color-surface-alt);
+}
+
+.city-opt-name {
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.3;
+}
+
+.city-opt-meta {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  line-height: 1.3;
+}
+
+
+/* ── 16. Timezone rows ── */
+#tz-rows {
+  list-style: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+#tz-rows:empty {
+  display: none;
+}
+
+.tz-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tz-row:last-child {
+  border-bottom: none;
+}
+
+.tz-row-local {
+  background-color: var(--color-surface);
+}
+
+/* City info column */
+.tz-row-city {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0; /* allow text truncation */
+}
+
+.tz-row-city-name {
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tz-row-country {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ✏ Change button on local row */
+.tz-row-change {
+  display: inline-flex;
+  align-items: center;
+  margin-top: var(--space-xs);
+  padding: 2px var(--space-xs);
+  font-family: var(--font-family);
+  font-size: 0.75rem;
+  color: var(--color-accent);
+  background: transparent;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  line-height: 1.4;
+  width: fit-content;
+}
+
+.tz-row-change:hover {
+  background-color: var(--color-surface-alt);
+}
+
+.tz-row-change:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Time info column */
+.tz-row-time-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.tz-row-time {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.tz-row-date {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* Meta row: abbr + badge + icon */
+.tz-row-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  justify-content: flex-end;
+}
+
+.tz-row-abbr {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tz-row-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+.tz-row-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+/* × remove button */
+.tz-row-remove {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  padding: 0;
+  line-height: 1;
+}
+
+.tz-row-remove:hover {
+  color: var(--color-text);
+  background-color: var(--color-surface-alt);
+}
+
+.tz-row-remove:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Inline "Change" search widget that appears inside the local row */
+.tz-inline-search {
+  position: relative;
+  margin-top: var(--space-xs);
+  width: 100%;
+}
+
+.tz-inline-search-input {
+  font-size: 0.9rem;
+  min-height: 2.2rem;
+  padding: 4px var(--space-sm);
+}
+
+.tz-inline-dropdown {
+  /* Inherits .city-search-dropdown; narrow it to the row width */
+  width: 100%;
+}
+
+
+/* ── 17. Mobile: stack rows vertically on small screens ── */
+@media (max-width: 480px) {
+  .tz-row {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .tz-row-city {
+    flex: 1 1 55%;
+  }
+
+  .tz-row-time-col {
+    flex: 1 1 auto;
+    align-items: flex-end;
+  }
+
+  .tz-row-remove {
+    order: -1;
+    min-width: 2.75rem;
+  }
+
+  .tz-row-time {
+    font-size: 1.25rem;
+  }
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
+  <meta name="description" content="Pick a moment in time, add cities, and share one link — everyone sees it in their own timezone." />
+  <title>When — Timezone Converter</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕐</text></svg>" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Skip navigation for keyboard/screen-reader users -->
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header role="banner">
+    <div class="container">
+      <span class="site-logo" aria-hidden="true">🕐</span>
+      <h1 class="site-title">When</h1>
+      <p class="site-tagline">Share a moment across timezones</p>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle light / dark mode">
+        <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" role="main">
+    <div class="container">
+
+      <!-- ── Time slider ── -->
+      <section class="section" aria-labelledby="slider-label">
+        <h2 id="slider-label" class="section-label">Select a time</h2>
+        <div class="slider-wrapper">
+          <div id="time-slider-container">
+            <!-- TimeSlider component mounts here (js/slider.js) -->
+          </div>
+        </div>
+        <p id="time-display" class="time-display" aria-live="polite"></p>
+      </section>
+
+      <!-- ── Date picker ── -->
+      <section class="section" aria-labelledby="date-label">
+        <h2 id="date-label" class="section-label">Select a date</h2>
+        <div id="date-container">
+          <label for="date-picker" class="visually-hidden">Date</label>
+          <input type="date" id="date-picker" class="date-input" />
+        </div>
+      </section>
+
+      <!-- ── Timezone rows ── -->
+      <section class="section" aria-labelledby="tz-label">
+        <h2 id="tz-label" class="section-label">Timezones</h2>
+        <!-- City search input mounts here (js/cities.js, sub-task 5) -->
+        <div id="city-search-container"></div>
+        <!-- Timezone rows rendered here (js/timezones.js) -->
+        <ul id="tz-rows" role="list" aria-label="Timezone rows" aria-live="polite"></ul>
+      </section>
+
+      <!-- ── Share button ── -->
+      <section class="section" aria-labelledby="share-label">
+        <h2 id="share-label" class="section-label visually-hidden">Share</h2>
+        <div id="share-container">
+          <button id="copy-link-btn" class="btn-share" type="button">
+            <span id="copy-link-icon" aria-hidden="true">🔗</span>
+            Copy link
+          </button>
+          <span id="copy-confirm" class="copy-confirm" aria-live="polite" hidden>✓ Link copied!</span>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="container">
+      <p class="footer-text">Built with <a href="https://www.ibm.com/products/bob" target="_blank" rel="noopener">IBM Bob</a></p>
+    </div>
+  </footer>
+
+  <!-- Luxon (exposes window.luxon) -->
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+
+  <!-- App modules -->
+  <script src="js/cities.js"></script>
+  <script src="js/timezones.js"></script>
+  <script src="js/slider.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
