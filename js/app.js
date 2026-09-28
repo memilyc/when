@@ -155,13 +155,12 @@
       if (descMeta) descMeta.setAttribute('content', title);
     }
 
-    /** Re-renders all timezone rows and keeps the URL bar in sync. */
+    /** Re-renders all timezone rows. Does NOT touch the URL bar. */
     function onStateChange() {
       if (!timezoneRows) return;
       var utcMillis = getCurrentUtcMillis();
       timezoneRows.updateAll(utcMillis);
       updatePageTitle(utcMillis);
-      history.replaceState(null, '', encodeState());
     }
 
     // Wire slider and date picker to onStateChange.
@@ -172,18 +171,44 @@
     var copyBtn     = document.getElementById('copy-link-btn');
     var copyConfirm = document.getElementById('copy-confirm');
 
+    /**
+     * Builds the human-readable share text:
+     *   Lagos, 1:00 AM
+     *   Seoul, 9:00 AM
+     *   https://memilyc.github.io/when/?t=...
+     */
+    function buildShareText(url) {
+      var utcMillis = getCurrentUtcMillis();
+      var lines = [];
+      if (timezoneRows) {
+        timezoneRows.rows.forEach(function (row) {
+          var dt = luxon.DateTime.fromMillis(utcMillis).setZone(row.tz);
+          var timeStr = dt.toJSDate().toLocaleTimeString(navigator.language, {
+            hour: 'numeric', minute: '2-digit', hour12: undefined,
+            timeZone: row.tz
+          });
+          lines.push(row.city + ', ' + timeStr);
+        });
+      }
+      lines.push(url);
+      return lines.join('\n');
+    }
+
     if (copyBtn) {
       copyBtn.addEventListener('click', function () {
-        var url = window.location.origin + encodeState();
-        history.replaceState(null, '', encodeState());
+        // Build the canonical URL and push it to the address bar only on copy
+        var encoded = encodeState();
+        var url = 'https://memilyc.github.io/when/' + (encoded.indexOf('?') !== -1 ? encoded.slice(encoded.indexOf('?')) : '');
+        history.replaceState(null, '', encoded);
+        var text = buildShareText(url);
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(url).then(function () {
+          navigator.clipboard.writeText(text).then(function () {
             showCopyConfirm();
           }).catch(function () {
-            fallbackCopy(url);
+            fallbackCopy(text);
           });
         } else {
-          fallbackCopy(url);
+          fallbackCopy(text);
         }
       });
     }
@@ -194,9 +219,9 @@
       setTimeout(function () { copyConfirm.hidden = true; }, 2500);
     }
 
-    function fallbackCopy(url) {
+    function fallbackCopy(text) {
       var input = document.createElement('input');
-      input.value = url;
+      input.value = text;
       input.style.cssText = 'position:fixed;opacity:0';
       document.body.appendChild(input);
       input.select();
