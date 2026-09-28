@@ -37,7 +37,9 @@
             <!-- TimeSlider component mounts here (js/slider.js) -->
           </div>
         </div>
-        <p id="time-display" class="time-display" aria-live="polite"></p>
+        <p id="time-display" class="time-display" aria-live="polite">
+          <span id="time-display-value"></span><span id="time-period-badge" class="time-period-badge" aria-hidden="true"></span>
+        </p>
       </section>
 
       <!-- ── Date picker ── -->
@@ -75,7 +77,10 @@
 
   <footer role="contentinfo">
     <div class="container">
-      <p class="footer-text">Built with <a href="https://www.ibm.com/products/bob" target="_blank" rel="noopener">IBM Bob</a></p>
+      <p class="footer-text">
+        <a href="https://github.com/YOUR_USERNAME/when" target="_blank" rel="noopener">When</a>
+        · Built with <a href="https://www.ibm.com/products/bob" target="_blank" rel="noopener">IBM Bob</a>
+      </p>
     </div>
   </footer>
 

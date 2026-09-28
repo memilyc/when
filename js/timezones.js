@@ -77,11 +77,9 @@
    */
   function buildCitySearch(container, onSelect) {
     // ── DOM scaffold ──
+    // wrapper is a plain group div — role="combobox" belongs on the input only
     var wrapper = document.createElement('div');
     wrapper.className = 'city-search-wrapper';
-    wrapper.setAttribute('role', 'combobox');
-    wrapper.setAttribute('aria-haspopup', 'listbox');
-    wrapper.setAttribute('aria-expanded', 'false');
 
     var label = document.createElement('label');
     label.setAttribute('for', 'city-search');
@@ -97,6 +95,8 @@
     input.setAttribute('autocorrect',  'off');
     input.setAttribute('spellcheck',   'false');
     input.setAttribute('role',         'combobox');
+    input.setAttribute('aria-haspopup', 'listbox');
+    input.setAttribute('aria-expanded', 'false');
     input.setAttribute('aria-autocomplete', 'list');
     input.setAttribute('aria-controls', 'city-search-listbox');
     input.setAttribute('aria-activedescendant', '');
@@ -120,12 +120,12 @@
 
     function openDropdown() {
       listbox.hidden = false;
-      wrapper.setAttribute('aria-expanded', 'true');
+      input.setAttribute('aria-expanded', 'true');
     }
 
     function closeDropdown() {
       listbox.hidden = true;
-      wrapper.setAttribute('aria-expanded', 'false');
+      input.setAttribute('aria-expanded', 'false');
       _activeIndex = -1;
       input.setAttribute('aria-activedescendant', '');
     }
@@ -191,6 +191,7 @@
       onSelect(city);
       input.value = '';
       closeDropdown();
+      input.focus();
     }
 
     function doSearch(q) {
@@ -222,6 +223,7 @@
       } else if (e.key === 'Escape') {
         closeDropdown();
         input.value = '';
+        input.focus();
       }
     });
 
@@ -354,12 +356,14 @@
   /**
    * @param {HTMLUListElement} listEl         — <ul id="tz-rows">
    * @param {HTMLElement}      searchContainer — #city-search-container
+   * @param {function}         [onRowAdded]    — optional callback after a row is added
    */
-  function TimezoneRows(listEl, searchContainer) {
+  function TimezoneRows(listEl, searchContainer, onRowAdded) {
     this.listEl = listEl;
     /** @type {Array<{city:string, country:string, tz:string, el:HTMLLIElement, isLocal:boolean}>} */
     this.rows   = [];
     this._lastUtcMillis = Date.now();
+    this._onRowAdded = onRowAdded || null;
 
     var self = this;
 
@@ -372,6 +376,13 @@
     var localTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     this._localZone = localTz;
     this._addLocalRow({ city: this._labelForZone(localTz), country: '', tz: localTz });
+
+    // ── Empty-state hint ──
+    this._hintEl = document.createElement('li');
+    this._hintEl.className = 'tz-rows-hint';
+    this._hintEl.setAttribute('aria-hidden', 'true');
+    this._hintEl.textContent = 'Search for a city above to add more timezones';
+    listEl.appendChild(this._hintEl);
   }
 
   /**
@@ -382,6 +393,13 @@
     // "America/New_York" → "New York"
     var parts = tz.split('/');
     return parts[parts.length - 1].replace(/_/g, ' ');
+  };
+
+  /** Shows/hides the empty-state hint based on whether any non-local rows exist. */
+  TimezoneRows.prototype._updateHint = function () {
+    if (!this._hintEl) return;
+    var hasExtra = this.rows.some(function (r) { return !r.isLocal; });
+    this._hintEl.hidden = hasExtra;
   };
 
   /** Adds the pinned local row (non-removable, has ✏ Change button). */
@@ -432,6 +450,13 @@
       ? luxon.DateTime.fromMillis(this._lastUtcMillis).setZone(this.rows[0].tz)
       : null;
     this._renderRowTime(row, this._lastUtcMillis, refDt);
+    // Move hint to end of list so it stays last
+    if (this._hintEl && this._hintEl.parentNode) {
+      this.listEl.appendChild(this._hintEl);
+    }
+    this._updateHint();
+    // Notify app.js so it can push the current slider UTC value into this row
+    if (this._onRowAdded) this._onRowAdded();
   };
 
   /**
@@ -450,6 +475,7 @@
     if (idx === -1) return;
     var removed = this.rows.splice(idx, 1)[0];
     if (removed.el.parentNode) removed.el.parentNode.removeChild(removed.el);
+    this._updateHint();
   };
 
   /**

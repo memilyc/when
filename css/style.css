@@ -27,7 +27,7 @@
 
   /* Text */
   --color-text:        #1f2328;
-  --color-text-muted:  #57606a;
+  --color-text-muted:  #444c56;  /* darkened from #57606a — passes 4.5:1 on #f7f8fa */
 
   /* Accent (links, focus rings) */
   --color-accent:      #0550ae;
@@ -71,7 +71,7 @@
     --color-border:      #30363d;
 
     --color-text:        #e6edf3;
-    --color-text-muted:  #8b949e;
+    --color-text-muted:  #9ea8b3;  /* lightened from #8b949e — passes 4.5:1 on #0d1117 */
 
     --color-accent:      #58a6ff;
 
@@ -193,7 +193,8 @@ header .container {
 .site-tagline {
   font-size: 0.875rem;
   color: var(--color-text-muted);
-  margin-left: auto;
+  flex: 1;          /* push toggle to the right */
+  text-align: right;
 }
 
 
@@ -392,7 +393,7 @@ footer[role="contentinfo"] {
 
 /* ── 11. Theme toggle button ── */
 .theme-toggle {
-  margin-left: var(--space-sm);
+  margin-left: auto;
   padding: var(--space-xs) var(--space-sm);
   background: var(--color-surface-alt);
   border: 1px solid var(--color-border);
@@ -419,7 +420,7 @@ footer[role="contentinfo"] {
   --color-surface-alt: #21262d;
   --color-border:      #30363d;
   --color-text:        #e6edf3;
-  --color-text-muted:  #8b949e;
+  --color-text-muted:  #9ea8b3;
   --color-accent:      #58a6ff;
   --color-track-day:   #d97706;
   --color-track-night: #6366f1;
@@ -433,7 +434,7 @@ footer[role="contentinfo"] {
   --color-surface-alt: #eef0f3;
   --color-border:      #d0d7de;
   --color-text:        #1f2328;
-  --color-text-muted:  #57606a;
+  --color-text-muted:  #444c56;
   --color-accent:      #0550ae;
   --color-track-day:   #f59e0b;
   --color-track-night: #4338ca;
@@ -495,6 +496,18 @@ footer[role="contentinfo"] {
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: opacity 0.15s ease;
+}
+
+/* In dark mode the accent is #58a6ff (light blue) — white text fails contrast.
+   Switch to dark text on the light-blue background. */
+[data-theme="dark"] .btn-share {
+  color: #0d1117;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-share {
+    color: #0d1117;
+  }
 }
 
 .btn-share:hover {
@@ -593,10 +606,6 @@ footer[role="contentinfo"] {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   overflow: hidden;
-}
-
-#tz-rows:empty {
-  display: none;
 }
 
 .tz-row {
@@ -794,4 +803,81 @@ footer[role="contentinfo"] {
   .tz-row-time {
     font-size: 1.25rem;
   }
+
+  /* Tighten section padding */
+  .section {
+    padding: var(--space-md);
+  }
+
+  /* Scale down large time display */
+  .time-display {
+    font-size: 1.5rem;
+  }
+
+  /* Hide tagline on narrow screens to prevent header overflow */
+  .site-tagline {
+    display: none;
+  }
+
+  /* Allow header items to wrap */
+  header .container {
+    flex-wrap: wrap;
+  }
+
+  /* Date input full-width on mobile */
+  .date-input {
+    max-width: 100%;
+  }
+
+  /* Time period badge sits inline below time */
+  .time-period-badge {
+    display: block;
+    text-align: center;
+    margin-top: var(--space-xs);
+  }
+}
+
+/* ── 18. Very small screens (≤ 360px) ── */
+@media (max-width: 360px) {
+  .site-title {
+    font-size: 1.25rem;
+  }
+
+  .site-logo {
+    font-size: 1.4rem;
+  }
+}
+
+
+/* ── 19. Slider touch-action (mobile Safari / Android) ── */
+.time-slider-input {
+  touch-action: none;   /* prevent scroll-jacking while dragging */
+}
+
+
+/* ── 20. Empty-state hint row ── */
+.tz-rows-hint {
+  padding: var(--space-md) var(--space-lg);
+  text-align: center;
+  font-size: 0.875rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+  border-bottom: none;
+}
+
+
+/* ── 21. Day-period badge (next to time display) ── */
+.time-period-badge {
+  display: inline-block;
+  margin-left: var(--space-sm);
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  vertical-align: middle;
+  line-height: 1.6;
 }
