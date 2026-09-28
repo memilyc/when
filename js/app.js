@@ -112,7 +112,7 @@
       var day   = parseInt(parts[2], 10);
       var h     = Math.floor(mins / 60);
       var m     = mins % 60;
-      var refZone = timezoneRows ? timezoneRows.getLocalZone() : 'local';
+      var refZone = timezoneRows ? timezoneRows.getLocalZone() : 'system';
       var dt = luxon.DateTime.fromObject(
         { year: year, month: month, day: day, hour: h, minute: m },
         { zone: refZone }
@@ -146,7 +146,7 @@
      * @param {number} utcMillis
      */
     function updatePageTitle(utcMillis) {
-      var localDt  = luxon.DateTime.fromMillis(utcMillis, { zone: 'local' });
+      var localDt  = luxon.DateTime.fromMillis(utcMillis, { zone: 'system' });
       var timeStr  = localDt.toLocaleString(luxon.DateTime.TIME_SIMPLE); // e.g. "3:30 PM"
       var dateStr  = localDt.toFormat('ccc, d MMM');                     // e.g. "Mon, 14 Jul"
       var title    = 'When \u2014 ' + timeStr + ' \u00b7 ' + dateStr + ' your time';
@@ -224,7 +224,7 @@
         // Decode shared URL: restore slider, date, and extra tz rows.
         var params    = new URLSearchParams(window.location.search);
         var utcMillis = parseInt(params.get('t'), 10) * 1000;
-        var localDt   = luxon.DateTime.fromMillis(utcMillis, { zone: 'local' });
+        var localDt   = luxon.DateTime.fromMillis(utcMillis, { zone: 'system' });
 
         if (datePicker) datePicker.value = localDt.toFormat('yyyy-MM-dd');
 
