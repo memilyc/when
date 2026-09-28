@@ -32,9 +32,10 @@
   function fmtTime(dt) {
     try {
       return dt.toJSDate().toLocaleTimeString(navigator.language, {
-        hour:   'numeric',
-        minute: '2-digit',
-        hour12: undefined,
+        hour:     'numeric',
+        minute:   '2-digit',
+        hour12:   undefined,
+        timeZone: dt.zoneName,  // ← must pass the row's timezone or JS uses local tz
       });
     } catch (e) {
       return dt.toFormat('HH:mm');
@@ -45,9 +46,10 @@
   function fmtDate(dt) {
     try {
       return dt.toJSDate().toLocaleDateString(navigator.language, {
-        weekday: 'short',
-        day:     'numeric',
-        month:   'short',
+        weekday:  'short',
+        day:      'numeric',
+        month:    'short',
+        timeZone: dt.zoneName,  // ← same fix: use the row's timezone
       });
     } catch (e) {
       return dt.toFormat('ccc, d LLL');
