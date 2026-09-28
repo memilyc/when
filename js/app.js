@@ -97,16 +97,9 @@
       datePicker.value = yyyy + '-' + mm + '-' + dd;
     }
 
-    // ── Timezone rows + city search ───────────────────────────────────────────
-    var timezoneRows = new TimezoneRows(
-      document.getElementById('tz-rows'),
-      document.getElementById('city-search-container'),
-      function onRowAdded() {
-        // Re-render all rows with the current slider+date UTC value so the newly
-        // added row immediately shows the correct converted time.
-        onStateChange();
-      }
-    );
+    // timezoneRows is set inside the loadCities callback so the city cache is
+    // guaranteed populated before the search input accepts input.
+    var timezoneRows = null;
 
     /** Returns the UTC millisecond value represented by the current slider + date. */
     function getCurrentUtcMillis() {
@@ -119,7 +112,7 @@
       var day   = parseInt(parts[2], 10);
       var h     = Math.floor(mins / 60);
       var m     = mins % 60;
-      var refZone = timezoneRows.getLocalZone();
+      var refZone = timezoneRows ? timezoneRows.getLocalZone() : 'local';
       var dt = luxon.DateTime.fromObject(
         { year: year, month: month, day: day, hour: h, minute: m },
         { zone: refZone }
@@ -139,9 +132,11 @@
       var params  = new URLSearchParams();
       params.set('t', utcSecs);
       // getTimezones() returns [localZone, ...addedZones]; skip the first.
-      timezoneRows.getTimezones().slice(1).forEach(function (tz) {
-        params.append('tz', tz);
-      });
+      if (timezoneRows) {
+        timezoneRows.getTimezones().slice(1).forEach(function (tz) {
+          params.append('tz', tz);
+        });
+      }
       return window.location.pathname + '?' + params.toString();
     }
 
@@ -160,50 +155,9 @@
       if (descMeta) descMeta.setAttribute('content', title);
     }
 
-    /**
-     * Restores slider, date picker, and timezone rows from URL search params.
-     * Called on page load when ?t= is present.
-     * @param {string} search  e.g. "?t=1720966200&tz=Africa%2FLagos"
-     */
-    function decodeState(search) {
-      var params = new URLSearchParams(search);
-      var t = params.get('t');
-      if (!t) return;
-
-      var utcMillis = parseInt(t, 10) * 1000;
-
-      // Express the moment in the recipient's local timezone.
-      var localDt = luxon.DateTime.fromMillis(utcMillis, { zone: 'local' });
-
-      // Restore date picker.
-      if (datePicker) {
-        datePicker.value = localDt.toFormat('yyyy-MM-dd');
-      }
-
-      // Restore slider (local-time minutes, snapped to nearest 15).
-      var localMins = localDt.hour * 60 + localDt.minute;
-      var snapped   = Math.round(localMins / 15) * 15;
-      slider.setValue(snapped);
-      updateTimeDisplay(snapped);
-
-      // Restore timezone rows after the cities cache is populated.
-      var tzParams = params.getAll('tz');
-      if (tzParams.length > 0) {
-        WhenCities.loadCities().then(function () {
-          timezoneRows.setTimezones(tzParams);
-          onStateChange();
-        });
-      } else {
-        onStateChange();
-      }
-
-      updatePageTitle(utcMillis);
-    }
-
-    // ── State change handler ──────────────────────────────────────────────────
-
     /** Re-renders all timezone rows and keeps the URL bar in sync. */
     function onStateChange() {
+      if (!timezoneRows) return;
       var utcMillis = getCurrentUtcMillis();
       timezoneRows.updateAll(utcMillis);
       updatePageTitle(utcMillis);
@@ -221,7 +175,6 @@
     if (copyBtn) {
       copyBtn.addEventListener('click', function () {
         var url = window.location.origin + encodeState();
-        // Sync URL bar immediately.
         history.replaceState(null, '', encodeState());
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(url).then(function () {
@@ -253,13 +206,38 @@
 
     // ── Bootstrap ─────────────────────────────────────────────────────────────
 
-    // Load cities first, then either decode URL state or render defaults.
+    // Wait for cities cache before building TimezoneRows — the search input must
+    // not go live until WhenCities._cache is populated or doSearch() returns [].
     WhenCities.loadCities().then(function () {
+
+      timezoneRows = new TimezoneRows(
+        document.getElementById('tz-rows'),
+        document.getElementById('city-search-container'),
+        function onRowAdded() {
+          // Re-render all rows with the current slider+date UTC value so the
+          // newly added row immediately shows the correct converted time.
+          onStateChange();
+        }
+      );
+
       if (window.location.search && new URLSearchParams(window.location.search).get('t')) {
-        decodeState(window.location.search);
-      } else {
-        onStateChange();
+        // Decode shared URL: restore slider, date, and extra tz rows.
+        var params    = new URLSearchParams(window.location.search);
+        var utcMillis = parseInt(params.get('t'), 10) * 1000;
+        var localDt   = luxon.DateTime.fromMillis(utcMillis, { zone: 'local' });
+
+        if (datePicker) datePicker.value = localDt.toFormat('yyyy-MM-dd');
+
+        var localMins = localDt.hour * 60 + localDt.minute;
+        var snapped   = Math.round(localMins / 15) * 15;
+        slider.setValue(snapped);
+        updateTimeDisplay(snapped);
+
+        var tzParams = params.getAll('tz');
+        if (tzParams.length > 0) timezoneRows.setTimezones(tzParams);
       }
+
+      onStateChange();
     });
   });
 }());
