@@ -14,6 +14,9 @@
      9. Utility
    ============================================================ */
 
+/* ── Google Fonts: Inter (used by Bob theme) ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
 
 /* ── 1. Light-mode colour tokens ── */
 :root {
@@ -903,4 +906,270 @@ footer[role="contentinfo"] {
   border-radius: 9999px;
   vertical-align: middle;
   line-height: 1.6;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   22. BOB THEME  [data-theme="bob"]
+   Palette: deep navy #123A83 · royal blue #214FE3 · teal #2B8987
+            lime green #58C85A · light cyan #6FC7C1 · white #FFFFFF
+   Font: Inter 700–800
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme="bob"] {
+  /* ── Token overrides ── */
+  --color-bg:          #0b1f4a;
+  --color-surface:     #123A83;
+  --color-surface-alt: #1a4499;
+  --color-border:      rgba(111, 199, 193, 0.25);
+  --color-text:        #ffffff;
+  --color-text-muted:  #6FC7C1;
+  --color-accent:      #58C85A;
+  --color-track-day:   #58C85A;
+  --color-track-night: #214FE3;
+  --color-track-bg:    rgba(111,199,193,0.2);
+  --color-focus-ring:  #58C85A;
+  --font-family:       'Inter', system-ui, sans-serif;
+  --radius-md:         12px;
+  --radius-sm:         6px;
+}
+
+/* ── Body: teal→navy diagonal background with faint crane SVG ── */
+[data-theme="bob"] body {
+  background-color: #0b1f4a;
+  /* diagonal teal-to-navy gradient */
+  background-image:
+    /* faint dotted halftone overlay */
+    radial-gradient(circle, rgba(111,199,193,0.18) 1px, transparent 1px),
+    /* teal (top-left) to navy (bottom-right) */
+    linear-gradient(135deg, #2B8987 0%, #123A83 45%, #0b1f4a 100%);
+  background-size: 20px 20px, 100% 100%;
+  background-attachment: fixed;
+  color: #ffffff;
+}
+
+/* Faint industrial crane silhouette in top-right corner */
+[data-theme="bob"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(480px, 60vw);
+  height: min(480px, 60vw);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2'%3E%3C!-- mast --%3E%3Cline x1='100' y1='200' x2='100' y2='20'/%3E%3C!-- boom left --%3E%3Cline x1='100' y1='30' x2='20' y2='50'/%3E%3C!-- boom right (jib) --%3E%3Cline x1='100' y1='30' x2='180' y2='50'/%3E%3C!-- counterweight arm --%3E%3Cline x1='100' y1='25' x2='40' y2='40'/%3E%3C!-- hoist line --%3E%3Cline x1='150' y1='50' x2='150' y2='110'/%3E%3C!-- load block --%3E%3Crect x='143' y='110' width='14' height='10'/%3E%3C!-- trolley --%3E%3Crect x='145' y='46' width='10' height='8'/%3E%3C!-- cables from mast tip --%3E%3Cline x1='100' y1='20' x2='20' y2='50'/%3E%3Cline x1='100' y1='20' x2='180' y2='50'/%3E%3C!-- base --%3E%3Crect x='88' y='190' width='24' height='10'/%3E%3C!-- building outline behind --%3E%3Crect x='10' y='120' width='40' height='80' opacity='0.4'/%3E%3Crect x='55' y='140' width='30' height='60' opacity='0.3'/%3E%3Cline x1='10' y1='130' x2='50' y2='130' opacity='0.4'/%3E%3Cline x1='10' y1='150' x2='50' y2='150' opacity='0.4'/%3E%3Cline x1='10' y1='170' x2='50' y2='170' opacity='0.4'/%3E%3Cline x1='20' y1='120' x2='20' y2='200' opacity='0.4'/%3E%3Cline x1='30' y1='120' x2='30' y2='200' opacity='0.4'/%3E%3Cline x1='40' y1='120' x2='40' y2='200' opacity='0.4'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: top right;
+}
+
+/* Ensure content sits above the decorative background */
+[data-theme="bob"] header,
+[data-theme="bob"] main,
+[data-theme="bob"] footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Header ── */
+[data-theme="bob"] header[role="banner"] {
+  background: rgba(18, 58, 131, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(111, 199, 193, 0.3);
+}
+
+[data-theme="bob"] .site-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+[data-theme="bob"] .site-tagline {
+  color: #6FC7C1;
+}
+
+/* ── Section cards ── */
+[data-theme="bob"] .section {
+  background: rgba(18, 58, 131, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(111, 199, 193, 0.2);
+  border-radius: var(--radius-md);
+}
+
+[data-theme="bob"] .section-label {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 700;
+  color: #6FC7C1;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ── Time display ── */
+[data-theme="bob"] .time-display {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+[data-theme="bob"] .time-period-badge {
+  color: #6FC7C1;
+  border-color: rgba(111,199,193,0.35);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Slider thumb: lime green ── */
+[data-theme="bob"] .time-slider-input::-webkit-slider-thumb {
+  background: #58C85A;
+}
+[data-theme="bob"] .time-slider-input::-moz-range-thumb {
+  background: #58C85A;
+}
+
+/* ── Date input ── */
+[data-theme="bob"] .date-input {
+  background: rgba(11, 31, 74, 0.7);
+  border-color: rgba(111, 199, 193, 0.3);
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+[data-theme="bob"] .date-input:hover {
+  border-color: #58C85A;
+}
+[data-theme="bob"] .date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.7;
+}
+
+/* ── City search ── */
+[data-theme="bob"] .city-search-input {
+  background: rgba(11, 31, 74, 0.7);
+  border-color: rgba(111, 199, 193, 0.3);
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+[data-theme="bob"] .city-search-input::placeholder {
+  color: #6FC7C1;
+  opacity: 0.7;
+}
+[data-theme="bob"] .city-search-input:hover {
+  border-color: #58C85A;
+}
+
+[data-theme="bob"] .city-search-dropdown {
+  background: #123A83;
+  border-color: rgba(111, 199, 193, 0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+[data-theme="bob"] .city-search-dropdown li:hover,
+[data-theme="bob"] .city-search-dropdown li.is-active,
+[data-theme="bob"] .city-search-dropdown li[aria-selected="true"] {
+  background: rgba(88, 200, 90, 0.15);
+}
+[data-theme="bob"] .city-opt-name {
+  color: #ffffff;
+}
+[data-theme="bob"] .city-opt-meta {
+  color: #6FC7C1;
+}
+
+/* ── Timezone rows ── */
+[data-theme="bob"] #tz-rows {
+  border-color: rgba(111, 199, 193, 0.2);
+}
+[data-theme="bob"] .tz-row {
+  background: rgba(11, 31, 74, 0.5);
+  border-bottom-color: rgba(111, 199, 193, 0.15);
+}
+[data-theme="bob"] .tz-row-local {
+  background: rgba(43, 137, 135, 0.2);
+}
+[data-theme="bob"] .tz-row-city-name {
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 700;
+}
+[data-theme="bob"] .tz-row-country {
+  color: #6FC7C1;
+}
+[data-theme="bob"] .tz-row-time {
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 800;
+}
+[data-theme="bob"] .tz-row-date,
+[data-theme="bob"] .tz-row-abbr {
+  color: #6FC7C1;
+}
+[data-theme="bob"] .tz-row-badge {
+  border-color: rgba(111,199,193,0.3);
+  color: #6FC7C1;
+}
+[data-theme="bob"] .tz-row-remove {
+  color: #6FC7C1;
+}
+[data-theme="bob"] .tz-row-remove:hover {
+  color: #ffffff;
+  background: rgba(88, 200, 90, 0.15);
+}
+[data-theme="bob"] .tz-row-change {
+  color: #58C85A;
+  border-color: rgba(88,200,90,0.4);
+}
+[data-theme="bob"] .tz-rows-hint {
+  color: #6FC7C1;
+}
+
+/* ── Share button: lime-to-blue gradient label ── */
+[data-theme="bob"] .btn-share {
+  background: #58C85A;
+  color: #111111;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  border-radius: var(--radius-md);
+}
+[data-theme="bob"] .btn-share:hover {
+  opacity: 0.88;
+}
+[data-theme="bob"] .copy-confirm {
+  color: #6FC7C1;
+}
+
+/* ── Footer ── */
+[data-theme="bob"] footer[role="contentinfo"] {
+  background: rgba(18, 58, 131, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top-color: rgba(111, 199, 193, 0.2);
+}
+[data-theme="bob"] .footer-text {
+  color: #6FC7C1;
+}
+[data-theme="bob"] .footer-text a {
+  color: #6FC7C1;
+}
+
+/* ── Focus ring ── */
+[data-theme="bob"] :focus-visible {
+  outline-color: #58C85A;
+}
+
+/* ── Theme toggle button in Bob mode ── */
+[data-theme="bob"] .theme-toggle {
+  background: rgba(88,200,90,0.15);
+  border-color: rgba(88,200,90,0.4);
+  color: #ffffff;
+}
+[data-theme="bob"] .theme-toggle:hover {
+  background: rgba(88,200,90,0.25);
+}
+
+/* ── Links ── */
+[data-theme="bob"] a {
+  color: #6FC7C1;
 }

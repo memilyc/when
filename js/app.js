@@ -19,15 +19,21 @@
     var iconEl   = btn && btn.querySelector('.theme-toggle-icon');
     var STORAGE_KEY = 'when-theme';
 
-    // Determine initial theme: saved preference → system preference
     function getSystemTheme() {
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 
+    var THEME_META = {
+      light: { icon: '🌙',  label: 'Switch to dark mode',  next: 'dark'  },
+      dark:  { icon: '✦',   label: 'Switch to Bob theme',  next: 'bob'   },
+      bob:   { icon: '☀️',  label: 'Switch to light mode', next: 'light' },
+    };
+
     function applyTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
-      if (iconEl) iconEl.textContent = theme === 'dark' ? '☀️' : '🌙';
-      if (btn) btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+      var meta = THEME_META[theme] || THEME_META.light;
+      if (iconEl) iconEl.textContent = meta.icon;
+      if (btn) btn.setAttribute('aria-label', meta.label);
     }
 
     var saved = localStorage.getItem(STORAGE_KEY);
@@ -36,7 +42,7 @@
     if (btn) {
       btn.addEventListener('click', function () {
         var current = document.documentElement.getAttribute('data-theme') || getSystemTheme();
-        var next = current === 'dark' ? 'light' : 'dark';
+        var next = (THEME_META[current] || THEME_META.light).next;
         applyTheme(next);
         localStorage.setItem(STORAGE_KEY, next);
       });
